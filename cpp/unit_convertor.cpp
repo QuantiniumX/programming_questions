@@ -18,8 +18,7 @@ int main(void) {
   std::map<std::string, std::function<void()>> conversionMap = {
       {"length", lengthConversion}, {"area", areaConversion},
       {"volume", volumeConversion}, {"weight", weightConversion},
-      {"time", timeConversion},
-      {"temp", tempConversion},
+      {"time", timeConversion},     {"temp", tempConversion},
   };
 
   auto it = conversionMap.find(unit);
@@ -179,9 +178,33 @@ void weightConversion() {
   std::cout << "Enter the weight you wanna convert from: " << std::endl;
 }
 void tempConversion() {
-  std::cout << "Enter the temperature you want to convert from: ";
-}
+    std::unordered_map<std::string, std::unordered_map<std::string, std::function<double(double)>>> conversionMap{
+        {"c", {{"k", [](double x) { return x + 273.15; }}, {"f", [](double x) { return x * 9.0 / 5.0 + 32; }}}}, 
+        {"f", {{"c", [](double x) { return (x - 32) * 5.0 / 9.0; }}, {"k", [](double x) { return (x - 32) * 5.0 / 9.0 + 273.15; }}}}, 
+        {"k", {{"c", [](double x) { return x - 273.15; }}, {"f", [](double x) { return x * 9.0 / 5.0 - 459.67; }}}}
+    };
 
-void timeConversion(){
+    std::cout << "Enter the unit you want to convert from: " << std::endl;
+    std::cout << "(c, k, f): ";
+    std::string unit_from{};
+    std::cin >> unit_from;
+
+    std::cout << "Enter the unit you want to convert to: " << std::endl;
+    std::cout << "(c, k, f): ";
+    std::string unit_to{};
+    std::cin >> unit_to;
+
+    double value, result;
+    std::cout << "Enter the value: ";
+    std::cin >> value;
+
+    if (conversionMap.find(unit_from) != conversionMap.end() && conversionMap[unit_from].find(unit_to) != conversionMap[unit_from].end()) {
+        result = conversionMap[unit_from][unit_to](value);
+        std::cout << value << " " << unit_from << " is equal to " << result << " " << unit_to << std::endl;
+    } else {
+        std::cerr << "Invalid units entered." << std::endl;
+    }
+}
+void timeConversion() {
   std::cout << "Enter the time you want to convert from: ";
 }
