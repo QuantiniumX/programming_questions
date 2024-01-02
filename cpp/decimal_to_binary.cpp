@@ -1,11 +1,20 @@
-#include <bitset>
 #include <iostream>
 
-int main() {
-  std::string binary = std::bitset<8>(12).to_string(); // to binary
-  std::cout << binary << "\n";
+int main(void){
+  int n;
+  std::cout << "Enter a number: ";
+  std::cin >> n;
 
-  unsigned long decimal = std::bitset<8>(binary).to_ulong();
-  std::cout << decimal << "\n";
-  return 0;
+  int i = 0;
+  
+  int binaryarr[32];
+  while(n > 0){
+    binaryarr[i] = n % 2;
+    n /= 2;
+    i++;
+  }
+
+  for(int j = i - 1;j >= 0;j--){
+    std::cout << binaryarr[j];
+  }
 }
