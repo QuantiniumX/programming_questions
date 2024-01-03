@@ -8,6 +8,7 @@ void volumeConversion();
 void weightConversion();
 void timeConversion();
 void tempConversion();
+double convertToSeconds(double value, double factor);
 
 int main(void) {
   std::string unit{};
@@ -175,36 +176,124 @@ void volumeConversion() {
   }
 }
 void weightConversion() {
-  std::cout << "Enter the weight you wanna convert from: " << std::endl;
-}
-void tempConversion() {
-    std::unordered_map<std::string, std::unordered_map<std::string, std::function<double(double)>>> conversionMap{
-        {"c", {{"k", [](double x) { return x + 273.15; }}, {"f", [](double x) { return x * 9.0 / 5.0 + 32; }}}}, 
-        {"f", {{"c", [](double x) { return (x - 32) * 5.0 / 9.0; }}, {"k", [](double x) { return (x - 32) * 5.0 / 9.0 + 273.15; }}}}, 
-        {"k", {{"c", [](double x) { return x - 273.15; }}, {"f", [](double x) { return x * 9.0 / 5.0 - 459.67; }}}}
-    };
+  std::cout << "Enter the unit you want to convert from: " << std::endl;
+  std::cout
+      << "(kg, g, mg, metric_ton, long_ton, short_ton, pound, dunca, carret): ";
+  std::string unit_from{};
+  std::cin >> unit_from;
 
-    std::cout << "Enter the unit you want to convert from: " << std::endl;
-    std::cout << "(c, k, f): ";
-    std::string unit_from{};
-    std::cin >> unit_from;
+  std::cout << "Enter the unit you want to convert to: " << std::endl;
+  std::cout
+      << "(kg, g, mg, metric_ton, long_ton, short_ton, pound, dunca, carret): ";
+  std::string unit_to{};
+  std::cin >> unit_to;
 
-    std::cout << "Enter the unit you want to convert to: " << std::endl;
-    std::cout << "(c, k, f): ";
-    std::string unit_to{};
-    std::cin >> unit_to;
+  std::map<std::string, double> conversionMap = {
+      {"kg", 1.0},
+      {"g", 1000},
+      {"mg", 1000000},
+      {"metric_ton", 0.001},
+      {"long_ton", 0.0009842073},
+      {"short_ton", 0.0011023122},
+      {"pound", 2.2046244202},
+      {"dunca", 35.273990723},
+      {"carret", 5000},
+  };
 
-    double value, result;
+  if (conversionMap.find(unit_from) != conversionMap.end() &&
+      conversionMap.find(unit_to) != conversionMap.end()) {
+    double factors_from = conversionMap[unit_from];
+    double factors_to = conversionMap[unit_to];
+    double value;
+
     std::cout << "Enter the value: ";
     std::cin >> value;
 
-    if (conversionMap.find(unit_from) != conversionMap.end() && conversionMap[unit_from].find(unit_to) != conversionMap[unit_from].end()) {
-        result = conversionMap[unit_from][unit_to](value);
-        std::cout << value << " " << unit_from << " is equal to " << result << " " << unit_to << std::endl;
-    } else {
-        std::cerr << "Invalid units entered." << std::endl;
-    }
+    double result = value * (factors_to / factors_from);
+    std::cout << value << " " << unit_from << " is equal to " << result << " "
+              << unit_to << std::endl;
+  }
+}
+void tempConversion() {
+  std::unordered_map<
+      std::string,
+      std::unordered_map<std::string, std::function<double(double)>>>
+      conversionMap{
+          {"c",
+           {{"k", [](double x) { return x + 273.15; }},
+            {"f", [](double x) { return x * 9.0 / 5.0 + 32; }}}},
+          {"f",
+           {{"c", [](double x) { return (x - 32) * 5.0 / 9.0; }},
+            {"k", [](double x) { return (x - 32) * 5.0 / 9.0 + 273.15; }}}},
+          {"k",
+           {{"c", [](double x) { return x - 273.15; }},
+            {"f", [](double x) { return x * 9.0 / 5.0 - 459.67; }}}}};
+
+  std::cout << "Enter the unit you want to convert from: " << std::endl;
+  std::cout << "(c, k, f): ";
+  std::string unit_from{};
+  std::cin >> unit_from;
+
+  std::cout << "Enter the unit you want to convert to: " << std::endl;
+  std::cout << "(c, k, f): ";
+  std::string unit_to{};
+  std::cin >> unit_to;
+
+  double value, result;
+  std::cout << "Enter the value: ";
+  std::cin >> value;
+
+  if (conversionMap.find(unit_from) != conversionMap.end() &&
+      conversionMap[unit_from].find(unit_to) !=
+          conversionMap[unit_from].end()) {
+    result = conversionMap[unit_from][unit_to](value);
+    std::cout << value << " " << unit_from << " is equal to " << result << " "
+              << unit_to << std::endl;
+  } else {
+    std::cerr << "Invalid units entered." << std::endl;
+  }
 }
 void timeConversion() {
-  std::cout << "Enter the time you want to convert from: ";
+  std::cout << "Enter the unit you want to convert from: " << std::endl;
+  std::cout << "(seconds, milliseconds, microseconds, nanoseconds, "
+               "picoseconds, minutes, hours, days, weeks, months, years): ";
+  std::string unit_from{};
+  std::cin >> unit_from;
+
+  std::cout << "Enter the unit you want to convert to: " << std::endl;
+  std::cout << "(seconds, milliseconds, microseconds, nanoseconds, "
+               "picoseconds, minutes, hours, days, weeks, months, years): ";
+  std::string unit_to{};
+  std::cin >> unit_to;
+
+  std::map<std::string, double> timeConversionMap{
+      {"seconds", 1.0},
+      {"milliseconds", 0.001},
+      {"microseconds", 0.000001},
+      {"nanoseconds", 0.000000001},
+      {"picoseconds", 0.000000000001},
+      {"minutes", 60.0},
+      {"hours", 3600.0},
+      {"days", 86400.0},
+      {"weeks", 604800.0},
+      {"months", 2628000.0},
+      {"years", 31536000.0}};
+
+  if (timeConversionMap.find(unit_from) != timeConversionMap.end() &&
+      timeConversionMap.find(unit_to) != timeConversionMap.end()) {
+    double value;
+    std::cout << "Enter the value: ";
+    std::cin >> value;
+
+    double factor_from = timeConversionMap[unit_from];
+    double factor_to = timeConversionMap[unit_to];
+
+    double result = convertToSeconds(value, factor_from) / factor_to;
+    std::cout << value << " " << unit_from << " is equal to " << result << " "
+              << unit_to << std::endl;
+  } else {
+    std::cout << "Invalid units for conversion." << std::endl;
+  }
 }
+
+double convertToSeconds(double value, double factor) { return value * factor; }
