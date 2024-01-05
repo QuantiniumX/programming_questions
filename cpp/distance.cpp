@@ -1,8 +1,8 @@
-#include <iostream>
-#include <string>
+#include <cmath>
 #include <curl/curl.h>
+#include <iostream>
 #include <json/json.h>
-#include <cmath> 
+#include <string>
 
 const std::string API_KEY = "API_KEY";
 const std::string GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/direct";
@@ -58,17 +58,40 @@ bool getLatLong(const std::string& city, double& latitude, double& longitude) {
     return false;
 }
 
+long double toRadians(const long double& degree) {
+    long double one_deg = (M_PI) / 180;
+    return (one_deg * degree);
+}
+
+long double distance(long double lat1, long double lon1, long double lat2, long double lon2) {
+    lat1 = toRadians(lat1);
+    lon1 = toRadians(lon1);
+    lat2 = toRadians(lat2);
+    lon2 = toRadians(lon2);
+
+    long double dlong = lon2 - lon1;
+    long double dlat = lat2 - lat1;
+
+    long double ans = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlong / 2), 2);
+
+    ans = 2 * asin(sqrt(ans));
+    long double R = 6371; // Radius of the Earth in kilometers
+    ans = ans * R;
+    return ans;
+}
+
 int main() {
     std::string city1, city2;
 
     std::cout << "Enter the first city: ";
     std::getline(std::cin, city1);
-    
+
     double lat1, lon1;
     if (getLatLong(city1, lat1, lon1)) {
         std::cout << "Latitude: " << lat1 << ", Longitude: " << lon1 << std::endl;
     } else {
         std::cerr << "Failed to retrieve coordinates for the first city." << std::endl;
+        return 1; // Indicate failure
     }
 
     std::cout << "Enter the second city: ";
@@ -79,10 +102,10 @@ int main() {
         std::cout << "Latitude: " << lat2 << ", Longitude: " << lon2 << std::endl;
     } else {
         std::cerr << "Failed to retrieve coordinates for the second city." << std::endl;
+        return 1; // Indicate failure
     }
 
-    double distance = sqrt((lat1 - lat2)*(lat1 - lat2) + (lon1 - lon2)*(lon1 - lon2));
-    std::cout << "Distance: " << distance <<std::endl;
+    std::cout << "Distance: " << distance(lat1, lon1, lat2, lon2) << " K.M" << std::endl;
 
     return 0;
 }
