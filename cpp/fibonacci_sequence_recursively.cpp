@@ -1,21 +1,18 @@
 #include <iostream>
 
-int fibonacci(int num);
+void fibonacci(int num, int current = 0, int next = 1);
 
 int main() {
     int num;
     std::cin >> num;
 
-    std::cout << fibonacci(num) << std::endl;
+    fibonacci(num);
 }
 
-int fibonacci(int num) {
-    if (num == 1) {
-        return num;
+void fibonacci(int num, int current, int next) {
+    if (num <= 0) {
+        return;
     }
-
-    int last = fibonacci(num - 1);
-    int slast = fibonacci(num - 2);
-
-    return last + slast; 
+    std::cout << current << " ";
+    fibonacci(num - 1, next, current + next);
 }
